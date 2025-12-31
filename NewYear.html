@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2026! 🎆</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #000428, #0c1013);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        canvas {
+            display: block;
+            background: radial-gradient(ellipse at bottom, #040607 0%, #090a0f 100%);
+        }
+
+        .title {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: gold;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                         0 0 40px rgba(255, 215, 0, 0.6);
+            animation: glow 2s ease-in-out infinite alternate;
+            z-index: 10;
+        }
+
+        .title h1 {
+            font-size: 4em;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        .title h2 {
+            font-size: 6em;
+            margin: 10px 0;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        /* Password Box di Tengah Bawah */
+        .password-box {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(73, 72, 72, 0.95);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 50;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .password-box h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .password-hint {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border: 2px solid #ffc107;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #212535;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #000000 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            font-weight: bold;
+        }
+
+        .password-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+            font-size: 0.9em;
+        }
+
+        /* QR Screen */
+        #qrScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        #qrCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        .qr-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 
+                        0 0 40px rgba(255, 215, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            z-index: 1002;
+            position: relative;
+        }
+
+        .qr-container h2 {
+            color: #FFD700;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .qr-container p {
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .qr-code {
+            background: rgb(0, 0, 0);
+            padding: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .qr-code img {
+            width: 250px;
+            height: 250px;
+            border: 3px solid #FFD700;
+            border-radius: 5px;
+        }
+
+        .dana-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .dana-info p {
+            margin: 10px 0;
+            color: #e0e0e0;
+            font-size: 1.1em;
+        }
+
+        .close-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .close-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .subtitle {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 1em;
+            text-align: center;
+            z-index: 10;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                             0 0 40px rgba(255, 215, 0, 0.6);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(255, 215, 0, 1),
+                             0 0 60px rgba(255, 215, 0, 0.8),
+                             0 0 80px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        .title {
+            animation: fadeIn 1.5s ease-out, glow 2s ease-in-out infinite alternate;
+        }
+
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10em;
+            color: rgb(0, 0, 0);
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .title h1 {
+                font-size: 2em;
+            }
+            .title h2 {
+                font-size: 3em;
+            }
+            .password-box {
+                padding: 20px;
+                bottom: 40px;
+            }
+            .password-box h3 {
+                font-size: 1.2em;
+            }
+            .qr-container {
+                padding: 20px;
+            }
+            .qr-code img {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireworks"></canvas>
+    
+    <div class="title">
+        <h1>HAPPY NEW YEAR</h1>
+        <h2>2026</h2>
+    </div>
+    
+    <!-- Password Box di Tengah Bawah -->
+    <div class="password-box" id="passwordBox">
+        <h3>🔐 Masukkan Password</h3>
+        <div class="password-hint">
+            Password: <strong>newyear</strong>
+        </div>
+        <input type="password" id="passwordInput" class="password-input" placeholder="Ketik password...">
+        <button onclick="checkPassword()" class="password-btn">Masuk</button>
+        <div id="errorMessage" class="error-message">❌ Password salah!</div>
+    </div>
+
+    <div class="subtitle">
+        🎆 Masukkan password untuk hadiah spesial! 🎆
+    </div>
+
+    <!-- QR Screen -->
+    <div id="qrScreen">
+        <canvas id="qrCanvas"></canvas>
+        <div class="qr-container">
+            <h2>🎁 Angpao Digital 🎁</h2>
+            <p>Terima kasih sudah berkunjung!<br>Scan QR Code di bawah untuk kirim angpao 😊</p>
+            <div class="qr-code">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='white' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='14' fill='%23666'%3ETempatkan%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-size='14' fill='%23666'%3EQR Code DANA%3C/text%3E%3Ctext x='50%25' y='70%25' dominant-baseline='middle' text-anchor='middle' font-size='14' fill='%23666'%3Edi sini%3C/text%3E%3C/svg%3E" alt="QR Code DANA">
+            </div>
+            <div class="dana-info">
+                <p>📱 <strong>DANA</strong></p>
+                <p>Scan QR Code untuk kirim angpao</p>
+                <p>💰 Nominal bebas, doa yang terpenting 🙏</p>
+            </div>
+            <button onclick="closeQR()" class="close-btn">Tutup & Nikmati Kembang Api 🎆</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const colors = ['#FF1461', '#18FF92', '#5A87FF', '#FBF38C', '#FF6B6B', '#4ECDC4', '#FFD93D', '#FF69B4', '#00FFF0', '#FFA500'];
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedY = Math.random() * 0.5;
+                this.opacity = Math.random();
+                this.opacityChange = Math.random() * 0.02 + 0.01;
+            }
+
+            update() {
+                this.y += this.speedY;
+                if (this.y > canvas.height) {
+                    this.y = 0;
+                }
+                this.opacity += this.opacityChange;
+                if (this.opacity >= 1 || this.opacity <= 0) {
+                    this.opacityChange = -this.opacityChange;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2 + 1;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8,
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.opacity = 1;
+                this.fade = Math.random() * 0.02 + 0.01;
+                this.gravity = 0.08;
+                this.friction = 0.98;
+            }
+
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.velocity.y += this.gravity;
+                
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.opacity -= this.fade;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Rocket {
+            constructor(x, targetY) {
+                this.x = x;
+                this.y = canvas.height;
+                this.targetY = targetY;
+                this.velocity = 8;
+                this.exploded = false;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.trail = [];
+            }
+
+            update() {
+                if (!this.exploded) {
+                    this.y -= this.velocity;
+                    this.trail.push({ x: this.x, y: this.y, opacity: 1 });
+                    
+                    if (this.trail.length > 20) {
+                        this.trail.shift();
+                    }
+                    
+                    if (this.y <= this.targetY) {
+                        this.exploded = true;
+                        createExplosion(this.x, this.y, this.color);
+                    }
+                }
+            }
+
+            draw() {
+                if (!this.exploded) {
+                    this.trail.forEach((point, index) => {
+                        ctx.save();
+                        ctx.globalAlpha = (index / this.trail.length) * 0.5;
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    
+                    ctx.save();
+                    ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+        }
+
+        const particles = [];
+        const rockets = [];
+        const stars = [];
+
+        for (let i = 0; i < 100; i++) {
+            stars.push(new Star());
+        }
+
+        function createExplosion(x, y, baseColor) {
+            const particleCount = 80;
+            for (let i = 0; i < particleCount; i++) {
+                const color = Math.random() > 0.5 ? baseColor : colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function createRocket() {
+            const x = Math.random() * canvas.width;
+            const targetY = Math.random() * (canvas.height * 0.4) + 100;
+            rockets.push(new Rocket(x, targetY));
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(9, 10, 15, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            rockets.forEach((rocket, index) => {
+                rocket.update();
+                rocket.draw();
+                if (rocket.exploded && rocket.trail.length === 0) {
+                    rockets.splice(index, 1);
+                }
+            });
+
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                if (particle.opacity <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        function showCountdown() {
+            let count = 3;
+            const countdownDiv = document.createElement('div');
+            countdownDiv.className = 'countdown';
+            document.body.appendChild(countdownDiv);
+
+            const countInterval = setInterval(() => {
+                if (count > 0) {
+                    countdownDiv.textContent = count;
+                    countdownDiv.style.animation = 'none';
+                    setTimeout(() => {
+                        countdownDiv.style.animation = 'pulse 1s ease-in-out';
+                    }, 10);
+                    count--;
+                } else {
+                    countdownDiv.textContent = '🎉';
+                    setTimeout(() => {
+                        countdownDiv.remove();
+                        startFireworks();
+                    }, 1000);
+                    clearInterval(countInterval);
+                }
+            }, 1000);
+        }
+
+        function startFireworks() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createRocket(), i * 300);
+            }
+
+            setInterval(() => {
+                if (Math.random() > 0.6) {
+                    createRocket();
+                }
+            }, 800);
+        }
+
+        canvas.addEventListener('click', (e) => {
+            createRocket();
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            createRocket();
+        });
+
+        // Password Check
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (input.toLowerCase() === 'newyear') {
+                document.getElementById('qrScreen').style.display = 'flex';
+                errorMsg.style.display = 'none';
+                initQRFireworks();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        // QR Fireworks
+        let qrCanvas, qrCtx, qrParticles, qrRockets, qrStars, qrAnimationRunning;
+
+        function initQRFireworks() {
+            qrCanvas = document.getElementById('qrCanvas');
+            qrCtx = qrCanvas.getContext('2d');
+            qrCanvas.width = window.innerWidth;
+            qrCanvas.height = window.innerHeight;
+            
+            qrParticles = [];
+            qrRockets = [];
+            qrStars = [];
+            qrAnimationRunning = true;
+
+            // Create stars
+            for (let i = 0; i < 80; i++) {
+                qrStars.push(new Star());
+            }
+
+            animateQRFireworks();
+            startQRFireworks();
+        }
+
+        function animateQRFireworks() {
+            if (!qrAnimationRunning) return;
+
+            qrCtx.fillStyle = 'rgba(9, 10, 15, 0.2)';
+            qrCtx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
+
+            qrStars.forEach(star => {
+                star.x = star.x; star.y = star.y;
+                star.update();
+                const oldDraw = star.draw;
+                star.draw = function() {
+                    qrCtx.save();
+                    qrCtx.globalAlpha = this.opacity;
+                    qrCtx.fillStyle = 'white';
+                    qrCtx.beginPath();
+                    qrCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    qrCtx.fill();
+                    qrCtx.restore();
+                };
+                star.draw();
+            });
+
+            qrRockets.forEach((rocket, index) => {
+                rocket.update();
+                const oldDraw = rocket.draw;
+                rocket.draw = function() {
+                    if (!this.exploded) {
+                        this.trail.forEach((point, idx) => {
+                            qrCtx.save();
+                            qrCtx.globalAlpha = (idx / this.trail.length) * 0.5;
+                            qrCtx.fillStyle = this.color;
+                            qrCtx.beginPath();
+                            qrCtx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                            qrCtx.fill();
+                            qrCtx.restore();
+                        });
+                        
+                        qrCtx.save();
+                        qrCtx.fillStyle = this.color;
+                        qrCtx.shadowBlur = 10;
+                        qrCtx.shadowColor = this.color;
+                        qrCtx.beginPath();
+                        qrCtx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                        qrCtx.fill();
+                        qrCtx.restore();
+                    }
+                };
+                rocket.draw();
+                if (rocket.exploded && rocket.trail.length === 0) {
+                    qrRockets.splice(index, 1);
+                }
+            });
+
+            qrParticles.forEach((particle, index) => {
+                particle.update();
+                const oldDraw = particle.draw;
+                particle.draw = function() {
+                    qrCtx.save();
+                    qrCtx.globalAlpha = this.opacity;
+                    qrCtx.fillStyle = this.color;
+                    qrCtx.beginPath();
+                    qrCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    qrCtx.fill();
+                    qrCtx.shadowBlur = 15;
+                    qrCtx.shadowColor = this.color;
+                    qrCtx.fill();
+                    qrCtx.restore();
+                };
+                particle.draw();
+                if (particle.opacity <= 0) {
+                    qrParticles.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(animateQRFireworks);
+        }
+
+        function startQRFireworks() {
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => createQRRocket(), i * 400);
+            }
+
+            setInterval(() => {
+                if (qrAnimationRunning && Math.random() > 0.7) {
+                    createQRRocket();
+                }
+            }, 1000);
+        }
+
+        function createQRRocket() {
+            const x = Math.random() * qrCanvas.width;
+            const targetY = Math.random() * (qrCanvas.height * 0.4) + 100;
+            const rocket = new Rocket(x, targetY);
+            
+            const originalUpdate = rocket.update.bind(rocket);
+            rocket.update = function() {
+                if (!this.exploded) {
+                    this.y -= this.velocity;
+                    this.trail.push({ x: this.x, y: this.y, opacity: 1 });
+                    
+                    if (this.trail.length > 20) {
+                        this.trail.shift();
+                    }
+                    
+                    if (this.y <= this.targetY) {
+                        this.exploded = true;
+                        createQRExplosion(this.x, this.y, this.color);
+                    }
+                }
+            };
+            
+            qrRockets.push(rocket);
+        }
+
+        function createQRExplosion(x, y, baseColor) {
+            const particleCount = 60;
+            for (let i = 0; i < particleCount; i++) {
+                const color = Math.random() > 0.5 ? baseColor : colors[Math.floor(Math.random() * colors.length)];
+                qrParticles.push(new Particle(x, y, color));
+            }
+        }
+
+        // Close QR
+        function closeQR() {
+            qrAnimationRunning = false;
+            document.getElementById('qrScreen').style.display = 'none';
+        }
+
+        // Enter key support
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Start
+        animate();
+        setTimeout(() => {
+            showCountdown();
+        }, 500);
+    </script>
+</body>
+</html>
